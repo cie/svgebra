@@ -1,8 +1,6 @@
-import { doc } from "../../model/document/Doc"
-import { checkValue, Value } from "../../model/dsl/DSL"
+import { display } from "../../model/document/Value"
+import { checkValue } from "../../model/dsl/DSL"
 import plugins from "../../plugins"
-import { SVGElem } from "../svg/SVGElem"
-import { JSX } from "mobx-jsx"
 
 declare global {
   interface ValueTypes {
@@ -10,25 +8,13 @@ declare global {
   }
 }
 
-plugins.register("DSJ_checkValue", (raw) => {
+plugins.register("DSL_checkValue", (raw) => {
   if (Array.isArray(raw)) {
     raw.forEach((e) => checkValue(e))
     return raw
   }
 })
 
-plugins.register("SVG_content", () => {
-  return [...doc.objects.values()]
-    .map(({ fn }) => fn())
-    .filter((o): o is any[] => Array.isArray(o))
-    .map(asSVG)
+plugins.register("Value_display", (v) => {
+  if (Array.isArray(v)) return v.map((e) => display(e))
 })
-
-function asSVG(o: SVGElem | unknown[]): JSX.Element {
-  if (o instanceof SVGElem) return o.asSVG
-  return o
-    .filter(
-      (o): o is any[] | SVGElem => o instanceof SVGElem || Array.isArray(o)
-    )
-    .map(asSVG)
-}

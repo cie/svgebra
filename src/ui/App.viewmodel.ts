@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx"
 import { doc } from "../model/document/Doc"
-import { parse } from "../model/dsl/DSL"
+import { display, SVG } from "../model/document/Value"
 import plugins from "../plugins"
 import FileAccess from "./FileAccess"
 
@@ -50,6 +50,14 @@ export class App {
 
   async save() {
     await FileAccess.save(doc.commandsFile)
+  }
+
+  get displayObjects(): SVG {
+    return [...doc.objects.values()].map(({ fn }) => display(fn()))
+  }
+
+  get svgContent(): SVG {
+    return [plugins("SVG_content"), this.displayObjects]
   }
 }
 export const app = new App()

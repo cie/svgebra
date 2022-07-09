@@ -74,7 +74,7 @@ export function App() {
         )}
       </div>
       <div class="t1 flex-1">
-        <svg class="t1 w-100% h-100%">{plugins("SVG_content")}</svg>
+        <svg class="t1 w-100% h-100%">{app.svgContent}</svg>
       </div>
     </div>
   )

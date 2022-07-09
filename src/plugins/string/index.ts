@@ -6,7 +6,7 @@ declare global {
   }
 }
 
-plugins.register("DSJ_checkValue", (raw) => {
+plugins.register("DSL_checkValue", (raw) => {
   if (typeof raw == "string") {
     return raw
   }

@@ -1,7 +1,8 @@
-import { computed, makeAutoObservable, observable } from "mobx"
+import { computed, makeAutoObservable } from "mobx"
 import plugins from "../../plugins"
-import { Command, parse, Value } from "../dsl/DSL"
-import { Obj } from "./Obj"
+import { Command, parse } from "../dsl/DSL"
+import { globalContext } from "../dsl/globals"
+import { Value } from "./Value"
 
 const letters = "abcdefghijklmnopqrstuvwxyz"
 
@@ -54,12 +55,7 @@ export class Doc {
   }
 
   get ctx() {
-    const funs = {} as { [name: string]: Function }
-    for (const fun of plugins("DSL_function")) funs[fun.name] = fun
-    const vars = Object.create(funs)
-    for (const varFn of plugins("DSL_variable"))
-      Object.defineProperty(vars, varFn.name, { get: varFn })
-    const objs = Object.create(vars)
+    const objs = Object.create(globalContext())
     for (const [name, { fn }] of this.objects.entries())
       Object.defineProperty(objs, name, {
         get() {

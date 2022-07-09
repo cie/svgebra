@@ -2,18 +2,13 @@ import plugins from "../../plugins"
 import { DefaultsMap } from "../../utils/DefaultsMap"
 import { doc } from "../document/Doc"
 import { Obj } from "../document/Obj"
-
-declare global {
-  interface PluginPoints {
-    DSL_function: Function
-    DSL_variable: () => any
-  }
-}
+import { Value } from "../document/Value"
+import { rebalance } from "./rebalance"
 
 export type Command = {
   type: "add"
   name?: string
-  fn: () => Obj
+  fn: () => Value
   expr: string
 }
 
@@ -35,6 +30,7 @@ export function memorize<A>(factory: () => A) {
 }
 
 export function parse(expr: string): Command[] {
+  expr = rebalance(expr)
   for (const preprocessor of plugins("DSL_preprocess"))
     expr = preprocessor(expr)
   const assignment = expr.match(/^\s*([a-z$_][0-9a-z$_]*)\s*=(?!>)/i)
@@ -69,20 +65,15 @@ export function parse(expr: string): Command[] {
   ]
 }
 
-export type Value = ValueTypes[keyof ValueTypes]
-
 declare global {
   interface PluginPoints {
-    DSJ_checkValue: (raw: any) => Value | undefined
-  }
-  interface ValueTypes {
-    object: Obj
+    DSL_checkValue: (raw: any) => Value | undefined
   }
 }
 
 export function checkValue(raw: any) {
   if (raw instanceof Obj) return raw
-  for (const converter of plugins("DSJ_checkValue")) {
+  for (const converter of plugins("DSL_checkValue")) {
     const r = converter(raw)
     if (r !== undefined) return r
   }
