@@ -2,10 +2,11 @@ import { makeAutoObservable } from "mobx"
 import { doc } from "../model/document/Doc"
 import { parse } from "../model/dsl/DSL"
 import plugins from "../plugins"
+import FileAccess from "./FileAccess"
 
 declare global {
   interface PluginPoints {
-    SVG_restart: () => void
+    Doc_restart: () => void
   }
 }
 
@@ -19,7 +20,7 @@ export class App {
 
   execute() {
     try {
-      doc.execute(...parse(this.input))
+      doc.execute(this.input)
       this.error = null
       this.input = ""
     } catch (e) {
@@ -29,7 +30,7 @@ export class App {
   }
 
   restart() {
-    plugins("SVG_restart").forEach((fn) => fn())
+    doc.restart()
   }
 
   get objects() {
@@ -41,6 +42,14 @@ export class App {
         value,
       }
     })
+  }
+
+  async open() {
+    doc.load(await FileAccess.open())
+  }
+
+  async save() {
+    await FileAccess.save(doc.commandsFile)
   }
 }
 export const app = new App()

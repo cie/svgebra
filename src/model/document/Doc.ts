@@ -1,6 +1,6 @@
 import { computed, makeAutoObservable, observable } from "mobx"
 import plugins from "../../plugins"
-import { Command } from "../dsl/DSL"
+import { Command, parse } from "../dsl/DSL"
 import { Obj } from "./Obj"
 
 const letters = "abcdefghijklmnopqrstuvwxyz"
@@ -8,16 +8,37 @@ const letters = "abcdefghijklmnopqrstuvwxyz"
 export class Doc {
   objects = new Map<string, { expr: string; fn: () => Obj }>()
   behaviors = [] as (() => void)[]
+  commands: string[] = []
 
   constructor() {
     makeAutoObservable(this)
   }
 
   clear() {
+    this.commands = []
     this.objects.clear()
   }
 
-  execute(...commands: Command[]) {
+  load(s: string) {
+    this.clear()
+    s.split("\n").forEach((line) => this.execute(line))
+    this.restart()
+  }
+
+  restart() {
+    plugins("Doc_restart").forEach((fn) => fn())
+  }
+
+  execute(line: string) {
+    this.commands.push(line)
+    this.executeCommand(...parse(line))
+  }
+
+  get commandsFile() {
+    return this.commands.join("\n")
+  }
+
+  private executeCommand(...commands: Command[]) {
     for (const command of commands)
       if (command.type === "add") {
         const name = command.name ?? this.emptyName()

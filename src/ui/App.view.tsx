@@ -24,10 +24,18 @@ export function App() {
   )
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      e.preventDefault()
-      app.restart()
-    }
+    const key = [
+      e.ctrlKey ? "Ctrl+" : "",
+      e.altKey ? "Alt+" : "",
+      e.shiftKey ? "Shift+" : "",
+      e.key.length === 1 ? e.key.toUpperCase() : e.key,
+    ].join("")
+
+    if (key === "Escape") app.restart()
+    else if (key === "Ctrl+O") void app.open()
+    else if (key === "Ctrl+S") void app.save()
+    else return
+    e.preventDefault()
   })
 
   return (

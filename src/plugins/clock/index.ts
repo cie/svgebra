@@ -19,7 +19,7 @@ function tick() {
   requestAnimationFrame(tick)
 }
 
-plugins.register("SVG_restart", () => (clock.start = Date.now()))
+plugins.register("Doc_restart", () => (clock.start = Date.now()))
 
 plugins.register("DSL_variable", function t() {
   return clock.millis / 1000

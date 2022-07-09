@@ -4,7 +4,7 @@ import { parse } from "./DSL"
 import "../../plugins/index"
 
 function _(cmds: string) {
-  cmds.split("\n").forEach((line) => doc.execute(...parse(line)))
+  cmds.split("\n").forEach((line) => doc.executeCommand(...parse(line)))
 }
 
 describe("names", () => {

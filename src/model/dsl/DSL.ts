@@ -27,7 +27,7 @@ let currentMemoryKey: Symbol
 let currentMemoryIndex = 0
 const memory = new DefaultsMap<Symbol, unknown[]>(() => [])
 
-plugins.register("SVG_restart", () => memory.clear())
+plugins.register("Doc_restart", () => memory.clear())
 
 export function memorize<A>(factory: () => A) {
   const currentMemory = memory.get(currentMemoryKey)
