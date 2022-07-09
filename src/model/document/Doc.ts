@@ -7,6 +7,7 @@ const letters = "abcdefghijklmnopqrstuvwxyz"
 
 export class Doc {
   objects = new Map<string, { expr: string; fn: () => Obj }>()
+  behaviors = [] as (() => void)[]
 
   constructor() {
     makeAutoObservable(this)

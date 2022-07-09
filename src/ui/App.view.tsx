@@ -23,6 +23,13 @@ export function App() {
       (app.input = e.currentTarget.value)
   )
 
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      e.preventDefault()
+      app.restart()
+    }
+  })
+
   return (
     <div class="t1 h-full flex">
       <div class="t1 w-25% bg-c-white br-1-gray">

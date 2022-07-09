@@ -1,6 +1,13 @@
 import { makeAutoObservable } from "mobx"
 import { doc } from "../model/document/Doc"
 import { parse } from "../model/dsl/DSL"
+import plugins from "../plugins"
+
+declare global {
+  interface PluginPoints {
+    SVG_restart: () => void
+  }
+}
 
 export class App {
   input = ""
@@ -19,6 +26,10 @@ export class App {
       if (e instanceof Error) this.error = e
       else this.error = new Error(`${e}`)
     }
+  }
+
+  restart() {
+    plugins("SVG_restart").forEach((fn) => fn())
   }
 
   get objects() {
