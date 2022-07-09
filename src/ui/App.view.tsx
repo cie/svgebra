@@ -1,3 +1,4 @@
+import { action } from "mobx";
 import { map } from "mobx-jsx";
 import { app } from "./App.viewmodel";
 
@@ -10,22 +11,24 @@ export function App() {
       app.execute();
     }
   };
-  const inputChanged = (
-    e: KeyboardEvent & { currentTarget: HTMLInputElement }
-  ) => (app.input = e.currentTarget.value);
+  const inputChanged = action(
+    (e: KeyboardEvent & { currentTarget: HTMLInputElement }) =>
+      (app.input = e.currentTarget.value)
+  );
 
   return (
     <div class="t1 h-full flex">
       <div class="t1 w-25% bg-c-white br-1-gray">
-        <ul class="t1 flex">
-          <div class="t1 flex-grow-1 text-right">
-            {map(
-              () => app.objects,
-              ({ value }) => (
-                <li class="t1 p-4 bb-1-gray-200">{value}</li>
-              )
-            )}
-          </div>
+        <ul class="t1">
+          {map(
+            () => app.objects,
+            ({ name, value }) => (
+              <li class="t1 p-4 bb-1-gray-200 flex">
+                <div>{name} = </div>
+                <div class="t1 flex-grow-1 text-right">{value}</div>
+              </li>
+            )
+          )}
         </ul>
         <input
           class="t1 w-100% b-1-gray p-3"

@@ -21,7 +21,8 @@ export class App {
   }
 
   get objects() {
-    return doc.objects.map((o) => ({
+    return [...doc.objects.entries()].map(([name, o]) => ({
+      name,
       value: o.commandLine,
     }));
   }

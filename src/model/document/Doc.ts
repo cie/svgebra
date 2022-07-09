@@ -3,8 +3,10 @@ import plugins from "../../plugins";
 import { Command } from "../dsl/DSL";
 import { Obj } from "./Obj";
 
+const letters = "abcdefghijklmnopqrstuvwxyz";
+
 class Doc {
-  objects: Obj[] = [];
+  objects = new Map<string, Obj>();
 
   constructor() {
     makeAutoObservable(this);
@@ -12,14 +14,23 @@ class Doc {
 
   execute(command: Command) {
     if (command.type === "add") {
-      this.objects.push(command.object);
+      const name = this.emptyName();
+      this.objects.set(name, command.object);
     }
+  }
+
+  emptyName() {
+    for (const letter of letters.split(""))
+      if (!this.objects.has(letter)) return letter;
+    for (let i = 1; ; ++i) if (!this.objects.has(`a${i}`)) return `a${i}`;
   }
 
   get ctx() {
     const funs = {};
     for (const fun of plugins("DSL_function")) funs[fun.name] = fun;
-    return funs;
+    const objs = Object.create(funs);
+    for (const [name, obj] of this.objects.entries()) objs[name] = obj;
+    return objs;
   }
 }
 export let doc = new Doc();

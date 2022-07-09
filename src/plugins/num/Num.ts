@@ -11,4 +11,8 @@ export class Num extends Obj {
   override get commandLine() {
     return `${this.real}`;
   }
+
+  valueOf() {
+    return this.real;
+  }
 }
