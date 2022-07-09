@@ -1,12 +1,12 @@
 import { computed, makeAutoObservable, observable } from "mobx"
 import plugins from "../../plugins"
-import { Command, parse } from "../dsl/DSL"
+import { Command, parse, Value } from "../dsl/DSL"
 import { Obj } from "./Obj"
 
 const letters = "abcdefghijklmnopqrstuvwxyz"
 
 export class Doc {
-  objects = new Map<string, { expr: string; fn: () => Obj }>()
+  objects = new Map<string, { expr: string; fn: () => Value }>()
   behaviors = [] as (() => void)[]
   commands: string[] = []
 

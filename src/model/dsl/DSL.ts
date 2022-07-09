@@ -69,7 +69,7 @@ export function parse(expr: string): Command[] {
   ]
 }
 
-type Value = ValueTypes[keyof ValueTypes]
+export type Value = ValueTypes[keyof ValueTypes]
 
 declare global {
   interface PluginPoints {
@@ -80,11 +80,11 @@ declare global {
   }
 }
 
-function checkValue(raw: any) {
+export function checkValue(raw: any) {
   if (raw instanceof Obj) return raw
   for (const converter of plugins("DSJ_checkValue")) {
     const r = converter(raw)
-    if (r) return r
+    if (r !== undefined) return r
   }
   throw new Error(`Unsupported value type: ${raw}`)
 }
