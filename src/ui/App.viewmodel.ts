@@ -26,7 +26,7 @@ export class App {
       const value = fn().asString
       return {
         name,
-        expr: expr.trim() === value ? undefined : expr,
+        expr: same(expr, value) ? undefined : expr,
         value,
       }
     })
@@ -34,3 +34,7 @@ export class App {
 }
 export const app = new App()
 ;(globalThis as any).app = app
+
+function same(s: string, s2: string) {
+  return s.replace(/\s*/g, "") === s2.replace(/\s*/g, "")
+}

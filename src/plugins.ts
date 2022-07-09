@@ -5,7 +5,9 @@ type PluginPoint = keyof PluginPoints
 
 const contributions: { [k in PluginPoint]?: PluginPoints[k][] } = {}
 
-export default function plugins(point: PluginPoint) {
+export default function plugins<k extends PluginPoint>(
+  point: k
+): PluginPoints[k][] {
   return contributions[point] ?? []
 }
 

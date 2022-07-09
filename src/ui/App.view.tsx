@@ -1,6 +1,13 @@
 import { action } from "mobx"
-import { map } from "mobx-jsx"
+import { map, JSX } from "mobx-jsx"
+import plugins from "../plugins"
 import { app } from "./App.viewmodel"
+
+declare global {
+  interface PluginPoints {
+    SVG_content: JSX.Element
+  }
+}
 
 export function App() {
   const inputKeypress = (
@@ -44,6 +51,9 @@ export function App() {
             {app.error?.message}
           </div>
         )}
+      </div>
+      <div class="t1 flex-1">
+        <svg class="t1 w-100% h-100%">{plugins("SVG_content")}</svg>
       </div>
     </div>
   )

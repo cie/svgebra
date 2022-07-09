@@ -46,3 +46,13 @@ export class Doc {
 }
 export let doc = new Doc()
 ;(globalThis as any).doc = doc
+
+declare var module: any
+if (module.hot) {
+  module.hot.dispose((data: any) => {
+    data.objects = doc.objects
+  })
+  module.hot.accept(() => {
+    doc.objects = module.hot.data.objects
+  })
+}
