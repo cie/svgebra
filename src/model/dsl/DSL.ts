@@ -1,4 +1,5 @@
 import plugins from "../../plugins"
+import { DefaultsMap } from "../../utils/DefaultsMap"
 import { doc } from "../document/Doc"
 import { Obj } from "../document/Obj"
 
@@ -21,10 +22,14 @@ declare global {
   }
 }
 
-let currentMemory: {}[] = []
+let currentMemoryKey: Symbol
 let currentMemoryIndex = 0
+const memory = new DefaultsMap<Symbol, unknown[]>(() => [])
+
+plugins.register("SVG_restart", () => memory.clear())
 
 export function memorize<A>(factory: () => A) {
+  const currentMemory = memory.get(currentMemoryKey)
   return (currentMemory[currentMemoryIndex++] ??= factory()) as A
 }
 
@@ -42,18 +47,18 @@ export function parse(expr: string): Command[] {
     }`
   )
   // try to evaluate
-  currentMemory = [] as {}[]
+  currentMemoryKey = Symbol()
   currentMemoryIndex = 0
   toObj(compiled(doc.ctx))
 
-  const memoryForThisLine = [] as {}[]
+  let memoryForThisLine = Symbol()
   return [
     {
       type: "add",
       name,
       expr,
       fn: () => {
-        currentMemory = memoryForThisLine
+        currentMemoryKey = memoryForThisLine
         currentMemoryIndex = 0
         return toObj(compiled(doc.ctx))
       },
