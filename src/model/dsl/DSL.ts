@@ -35,6 +35,8 @@ export function memorize<A>(factory: () => A) {
 }
 
 export function parse(expr: string): Command[] {
+  for (const preprocessor of plugins("DSL_preprocess"))
+    expr = preprocessor(expr)
   const assignment = expr.match(/^\s*([a-z$_][0-9a-z$_]*)\s*=(?!>)/i)
   let name: string | undefined = undefined
   if (assignment) {
