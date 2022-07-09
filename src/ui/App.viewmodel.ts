@@ -35,7 +35,7 @@ export class App {
 
   get objects() {
     return [...doc.objects.entries()].map(([name, { expr, fn }]) => {
-      const value = fn().asString
+      const value = fn().toString()
       return {
         name,
         expr: same(expr, value) ? undefined : expr,

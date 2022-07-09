@@ -52,7 +52,7 @@ export function parse(expr: string): Command[] {
   // try to evaluate
   currentMemoryKey = Symbol()
   currentMemoryIndex = 0
-  toObj(compiled(doc.ctx))
+  checkValue(compiled(doc.ctx))
 
   let memoryForThisLine = Symbol()
   return [
@@ -63,21 +63,26 @@ export function parse(expr: string): Command[] {
       fn: () => {
         currentMemoryKey = memoryForThisLine
         currentMemoryIndex = 0
-        return toObj(compiled(doc.ctx))
+        return checkValue(compiled(doc.ctx))
       },
     },
   ]
 }
 
+type Value = ValueTypes[keyof ValueTypes]
+
 declare global {
   interface PluginPoints {
-    DSL_toObj: (raw: any) => Obj | undefined
+    DSJ_checkValue: (raw: any) => Value | undefined
+  }
+  interface ValueTypes {
+    object: Obj
   }
 }
 
-function toObj(raw: any) {
+function checkValue(raw: any) {
   if (raw instanceof Obj) return raw
-  for (const converter of plugins("DSL_toObj")) {
+  for (const converter of plugins("DSJ_checkValue")) {
     const r = converter(raw)
     if (r) return r
   }

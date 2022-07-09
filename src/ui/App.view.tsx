@@ -39,15 +39,19 @@ export function App() {
   })
 
   return (
-    <div class="t1 h-full flex">
-      <div class="t1 w-25% bg-c-white br-1-gray">
+    <div class="t1 h-full flex whitespace-pre">
+      <div class="t1 w-25% bg-c-white br-1-gray whitespace-pre">
         <ul class="t1">
           {map(
             () => app.objects,
             ({ name, expr, value }) => (
               <li class="t1 p-4 bb-1-gray-200 flex">
                 <div>{name} =</div>
-                {expr && <div>&nbsp;{expr} = </div>}
+                {expr && (
+                  <div class="t1 overflow-hidden text-overflow-ellipsis">
+                    &nbsp;{expr} ={" "}
+                  </div>
+                )}
                 <div class="t1 flex-grow-1 text-right">{value}</div>
               </li>
             )

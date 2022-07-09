@@ -1,5 +1,5 @@
 import "./color"
-import "./Num"
+import "./number"
 import "./svg"
 import "./clock"
 import "./random"
