@@ -21,6 +21,13 @@ declare global {
   }
 }
 
+let currentMemory: {}[] = []
+let currentMemoryIndex = 0
+
+export function memorize<A>(factory: () => A) {
+  return (currentMemory[currentMemoryIndex++] ??= factory()) as A
+}
+
 export function parse(expr: string): Command[] {
   const assignment = expr.match(/^\s*([a-z$_][0-9a-z$_]*)\s*=(?!>)/i)
   let name: string | undefined = undefined
@@ -35,8 +42,23 @@ export function parse(expr: string): Command[] {
     }`
   )
   // try to evaluate
+  currentMemory = [] as {}[]
+  currentMemoryIndex = 0
   toObj(compiled(doc.ctx))
-  return [{ type: "add", name, expr, fn: () => toObj(compiled(doc.ctx)) }]
+
+  const memoryForThisLine = [] as {}[]
+  return [
+    {
+      type: "add",
+      name,
+      expr,
+      fn: () => {
+        currentMemory = memoryForThisLine
+        currentMemoryIndex = 0
+        return toObj(compiled(doc.ctx))
+      },
+    },
+  ]
 }
 
 declare global {
