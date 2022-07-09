@@ -1,22 +1,23 @@
-import { makeAutoObservable } from "mobx";
-import { doc } from "../model/document/Doc";
-import { parse } from "../model/dsl/DSL";
+import { makeAutoObservable } from "mobx"
+import { doc } from "../model/document/Doc"
+import { parse } from "../model/dsl/DSL"
 
 export class App {
-  input = "";
-  error: Error | null = null;
+  input = ""
+  error: Error | null = null
 
   constructor() {
-    makeAutoObservable(this);
+    makeAutoObservable(this)
   }
 
   execute() {
     try {
-      doc.execute(parse(this.input));
-      this.error = null;
-      this.input = "";
+      doc.execute(...parse(this.input))
+      this.error = null
+      this.input = ""
     } catch (e) {
-      this.error = e;
+      if (e instanceof Error) this.error = e
+      else this.error = new Error(`${e}`)
     }
   }
 
@@ -24,7 +25,7 @@ export class App {
     return [...doc.objects.entries()].map(([name, o]) => ({
       name,
       value: o.commandLine,
-    }));
+    }))
   }
 }
-export const app = new App();
+export const app = new App()

@@ -1,0 +1,27 @@
+import { Num } from "../../plugins/num/Num"
+import { doc } from "../document/Doc"
+import { parse } from "./DSL"
+import "../../plugins/index"
+
+function _(cmds: string) {
+  cmds.split("\n").forEach((line) => doc.execute(...parse(line)))
+}
+
+describe("names", () => {
+  beforeEach(() => {
+    doc.clear()
+  })
+  it("automatically given", () => {
+    _(`4`)
+    expect(doc.objects.get("a")).toEqual(new Num(4))
+  })
+  it("can be reused", () => {
+    _(`4
+       a*2`)
+    expect(doc.objects.get("b")).toEqual(new Num(8))
+  })
+  it("can be explicitly given", () => {
+    _(`x = 3`)
+    expect(doc.objects.get("x")).toEqual(new Num(3))
+  })
+})

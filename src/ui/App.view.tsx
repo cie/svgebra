@@ -1,20 +1,20 @@
-import { action } from "mobx";
-import { map } from "mobx-jsx";
-import { app } from "./App.viewmodel";
+import { action } from "mobx"
+import { map } from "mobx-jsx"
+import { app } from "./App.viewmodel"
 
 export function App() {
   const inputKeypress = (
     e: KeyboardEvent & { currentTarget: HTMLInputElement }
   ) => {
     if (e.key === "Enter") {
-      e.preventDefault();
-      app.execute();
+      e.preventDefault()
+      app.execute()
     }
-  };
+  }
   const inputChanged = action(
-    (e: KeyboardEvent & { currentTarget: HTMLInputElement }) =>
+    (e: InputEvent & { currentTarget: HTMLInputElement }) =>
       (app.input = e.currentTarget.value)
-  );
+  )
 
   return (
     <div class="t1 h-full flex">
@@ -35,8 +35,8 @@ export function App() {
           type="text"
           value={app.input}
           autofocus
-          on:input={inputChanged}
-          on:keypress={inputKeypress}
+          onInput={inputChanged}
+          onKeyPress={inputKeypress}
         />
         {app.error && (
           <div class="t1 p-5 bg-c-red-100 color-red-800">
@@ -45,5 +45,5 @@ export function App() {
         )}
       </div>
     </div>
-  );
+  )
 }
