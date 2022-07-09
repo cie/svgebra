@@ -48,11 +48,13 @@ export function App() {
               <li class="t1 p-4 bb-1-gray-200 flex">
                 <div>{name} =</div>
                 {expr && (
-                  <div class="t1 overflow-hidden text-overflow-ellipsis">
+                  <div class="t1 flex-shrink-1 flex-grow-0 overflow-hidden text-overflow-ellipsis">
                     &nbsp;{expr} ={" "}
                   </div>
                 )}
-                <div class="t1 flex-grow-1 text-right">{value}</div>
+                <div class="t1 flex-grow-1 text-right overflow-hidden text-overflow-ellipsis">
+                  {value}
+                </div>
               </li>
             )
           )}
