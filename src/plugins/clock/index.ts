@@ -1,4 +1,4 @@
-import { observable } from "mobx"
+import { action, observable } from "mobx"
 import { Obj } from "../../model/document/Obj"
 import plugins from "../../plugins"
 
@@ -8,16 +8,15 @@ const clock = observable({
   dt: 0,
 })
 
-requestAnimationFrame(tick)
-
 let last = Date.now()
-function tick() {
+const tick = action(() => {
   const now = Date.now()
   clock.millis = now - clock.start
   clock.dt = (now - last) / 1000
   last = now
   requestAnimationFrame(tick)
-}
+})
+requestAnimationFrame(tick)
 
 plugins.register("Doc_restart", () => (clock.start = Date.now()))
 
