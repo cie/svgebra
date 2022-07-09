@@ -13,15 +13,15 @@ describe("names", () => {
   })
   it("automatically given", () => {
     _(`4`)
-    expect(doc.objects.get("a")).toEqual(new Num(4))
+    expect(doc.get("a")).toEqual(new Num(4))
   })
   it("can be reused", () => {
     _(`4
        a*2`)
-    expect(doc.objects.get("b")).toEqual(new Num(8))
+    expect(doc.get("b")).toEqual(new Num(8))
   })
   it("can be explicitly given", () => {
     _(`x = 3`)
-    expect(doc.objects.get("x")).toEqual(new Num(3))
+    expect(doc.get("x")).toEqual(new Num(3))
   })
 })

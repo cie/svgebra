@@ -22,10 +22,11 @@ export class App {
   }
 
   get objects() {
-    return [...doc.objects.entries()].map(([name, o]) => ({
+    return [...doc.objects.entries()].map(([name, fn]) => ({
       name,
-      value: o.commandLine,
+      value: fn().commandLine,
     }))
   }
 }
 export const app = new App()
+;(globalThis as any).app = app

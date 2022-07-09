@@ -8,7 +8,7 @@ declare global {
   }
 }
 
-export type Command = { type: "add"; name?: string; object: Obj }
+export type Command = { type: "add"; name?: string; fn: () => Obj }
 
 declare global {
   interface PluginPoints {
@@ -16,39 +16,20 @@ declare global {
   }
 }
 
-function createWritableContext(ctx: object) {
-  return new Proxy(Object.create(ctx), {
-    has(target, key) {
-      return true
-    },
-    get(target, key) {
-      if (key === Symbol.unscopables) return []
-      if (!(key in target)) throw new Error(`Undefined variable ${String(key)}`)
-      return target[key]
-    },
-    set(target, key, value) {
-      target[key] = value
-      return true
-    },
-  })
-}
-
 export function parse(input: string): Command[] {
-  const ctx = createWritableContext(doc.ctx)
+  const assignment = input.match(/^\s*([a-z$_][0-9a-z$_]*)\s*=(?!>)/i)
+  let name: string | undefined = undefined
+  if (assignment) {
+    input = input.slice(assignment[0].length)
+    name = assignment[1]
+  }
   const compiled = new Function(
     "__ctx",
     `with(__ctx){
       return ((((${input}))));
     }`
   )
-  const raw = compiled(ctx)
-  const newNames = Object.keys(ctx)
-  if (!newNames.length) return [{ type: "add", object: toObj(raw) }]
-  return newNames.map((name) => ({
-    type: "add",
-    name,
-    object: toObj(ctx[name]),
-  }))
+  return [{ type: "add", name, fn: () => toObj(compiled(doc.ctx)) }]
 }
 
 declare global {

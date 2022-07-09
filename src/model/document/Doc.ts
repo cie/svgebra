@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx"
+import { computed, makeAutoObservable, observable } from "mobx"
 import plugins from "../../plugins"
 import { Command } from "../dsl/DSL"
 import { Obj } from "./Obj"
@@ -6,7 +6,7 @@ import { Obj } from "./Obj"
 const letters = "abcdefghijklmnopqrstuvwxyz"
 
 export class Doc {
-  objects = new Map<string, Obj>()
+  objects = new Map<string, () => Obj>()
 
   constructor() {
     makeAutoObservable(this)
@@ -16,11 +16,19 @@ export class Doc {
     this.objects.clear()
   }
 
+  get(name: string) {
+    return this.objects.get(name)?.()
+  }
+  has(name: string) {
+    return this.objects.has(name)
+  }
+
   execute(...commands: Command[]) {
     for (const command of commands)
       if (command.type === "add") {
         const name = command.name ?? this.emptyName()
-        this.objects.set(name, command.object)
+        const c = computed(command.fn)
+        this.objects.set(name, () => c.get())
       }
   }
 
@@ -34,7 +42,12 @@ export class Doc {
     const funs = {} as { [name: string]: Function }
     for (const fun of plugins("DSL_function")) funs[fun.name] = fun
     const objs = Object.create(funs)
-    for (const [name, obj] of this.objects.entries()) objs[name] = obj
+    for (const [name, fn] of this.objects.entries())
+      Object.defineProperty(objs, name, {
+        get() {
+          return fn()
+        },
+      })
     return objs
   }
 }
