@@ -22,9 +22,10 @@ export function App() {
         <ul class="t1">
           {map(
             () => app.objects,
-            ({ name, value }) => (
+            ({ name, expr, value }) => (
               <li class="t1 p-4 bb-1-gray-200 flex">
-                <div>{name} = </div>
+                <div>{name} =</div>
+                {expr && <div>&nbsp;{expr} = </div>}
                 <div class="t1 flex-grow-1 text-right">{value}</div>
               </li>
             )

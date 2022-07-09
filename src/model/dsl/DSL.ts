@@ -8,7 +8,12 @@ declare global {
   }
 }
 
-export type Command = { type: "add"; name?: string; fn: () => Obj }
+export type Command = {
+  type: "add"
+  name?: string
+  fn: () => Obj
+  expr: string
+}
 
 declare global {
   interface PluginPoints {
@@ -16,20 +21,22 @@ declare global {
   }
 }
 
-export function parse(input: string): Command[] {
-  const assignment = input.match(/^\s*([a-z$_][0-9a-z$_]*)\s*=(?!>)/i)
+export function parse(expr: string): Command[] {
+  const assignment = expr.match(/^\s*([a-z$_][0-9a-z$_]*)\s*=(?!>)/i)
   let name: string | undefined = undefined
   if (assignment) {
-    input = input.slice(assignment[0].length)
+    expr = expr.slice(assignment[0].length)
     name = assignment[1]
   }
   const compiled = new Function(
     "__ctx",
     `with(__ctx){
-      return ((((${input}))));
+      return ((((${expr}))));
     }`
   )
-  return [{ type: "add", name, fn: () => toObj(compiled(doc.ctx)) }]
+  // try to evaluate
+  toObj(compiled(doc.ctx))
+  return [{ type: "add", name, expr, fn: () => toObj(compiled(doc.ctx)) }]
 }
 
 declare global {

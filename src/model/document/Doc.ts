@@ -6,7 +6,7 @@ import { Obj } from "./Obj"
 const letters = "abcdefghijklmnopqrstuvwxyz"
 
 export class Doc {
-  objects = new Map<string, () => Obj>()
+  objects = new Map<string, { expr: string; fn: () => Obj }>()
 
   constructor() {
     makeAutoObservable(this)
@@ -17,7 +17,7 @@ export class Doc {
   }
 
   get(name: string) {
-    return this.objects.get(name)?.()
+    return this.objects.get(name)?.fn()
   }
   has(name: string) {
     return this.objects.has(name)
@@ -28,7 +28,7 @@ export class Doc {
       if (command.type === "add") {
         const name = command.name ?? this.emptyName()
         const c = computed(command.fn)
-        this.objects.set(name, () => c.get())
+        this.objects.set(name, { expr: command.expr, fn: () => c.get() })
       }
   }
 
@@ -42,7 +42,7 @@ export class Doc {
     const funs = {} as { [name: string]: Function }
     for (const fun of plugins("DSL_function")) funs[fun.name] = fun
     const objs = Object.create(funs)
-    for (const [name, fn] of this.objects.entries())
+    for (const [name, { fn }] of this.objects.entries())
       Object.defineProperty(objs, name, {
         get() {
           return fn()

@@ -22,10 +22,14 @@ export class App {
   }
 
   get objects() {
-    return [...doc.objects.entries()].map(([name, fn]) => ({
-      name,
-      value: fn().commandLine,
-    }))
+    return [...doc.objects.entries()].map(([name, { expr, fn }]) => {
+      const value = fn().asString
+      return {
+        name,
+        expr: expr.trim() === value ? undefined : expr,
+        value,
+      }
+    })
   }
 }
 export const app = new App()
