@@ -1,4 +1,4 @@
-import { Num } from "../../plugins/num/Num"
+import { Num } from "../../plugins/Num/Num"
 import { doc } from "../document/Doc"
 import { parse } from "./DSL"
 import "../../plugins/index"
@@ -13,15 +13,15 @@ describe("names", () => {
   })
   it("automatically given", () => {
     _(`4`)
-    expect(doc.get("a")).toEqual(new Num(4))
+    expect(doc.objects.get("a")?.fn()).toEqual(new Num(4))
   })
   it("can be reused", () => {
     _(`4
        a*2`)
-    expect(doc.get("b")).toEqual(new Num(8))
+    expect(doc.objects.get("b")?.fn()).toEqual(new Num(8))
   })
   it("can be explicitly given", () => {
     _(`x = 3`)
-    expect(doc.get("x")).toEqual(new Num(3))
+    expect(doc.objects.get("x")?.fn()).toEqual(new Num(3))
   })
 })

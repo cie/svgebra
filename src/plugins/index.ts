@@ -1,2 +1,2 @@
-import "./color";
-import "./num";
+import "./color"
+import "./Num"

@@ -16,13 +16,6 @@ export class Doc {
     this.objects.clear()
   }
 
-  get(name: string) {
-    return this.objects.get(name)?.fn()
-  }
-  has(name: string) {
-    return this.objects.has(name)
-  }
-
   execute(...commands: Command[]) {
     for (const command of commands)
       if (command.type === "add") {
