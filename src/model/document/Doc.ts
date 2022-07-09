@@ -35,7 +35,10 @@ export class Doc {
   get ctx() {
     const funs = {} as { [name: string]: Function }
     for (const fun of plugins("DSL_function")) funs[fun.name] = fun
-    const objs = Object.create(funs)
+    const vars = Object.create(funs)
+    for (const varFn of plugins("DSL_variable"))
+      Object.defineProperty(vars, varFn.name, { get: varFn })
+    const objs = Object.create(vars)
     for (const [name, { fn }] of this.objects.entries())
       Object.defineProperty(objs, name, {
         get() {

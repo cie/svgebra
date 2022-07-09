@@ -21,9 +21,9 @@ function tick() {
 
 plugins.register("SVG_restart", () => (clock.start = Date.now()))
 
-plugins.register("DSL_function", function t() {
+plugins.register("DSL_variable", function t() {
   return clock.millis / 1000
 })
-plugins.register("DSL_function", function dt() {
+plugins.register("DSL_variable", function dt() {
   return clock.dt
 })

@@ -6,6 +6,7 @@ import { Obj } from "../document/Obj"
 declare global {
   interface PluginPoints {
     DSL_function: Function
+    DSL_variable: () => any
   }
 }
 
